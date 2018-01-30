@@ -1,0 +1,29 @@
+---
+title: "TukeyHSD"
+author: "Matts966"
+date: "`r format(Sys.time(), '%Y/%m/%d')`"
+output:
+  pdf_document:
+    latex_engine: lualatex
+  word_document: default
+documentclass: ltjsarticle
+---
+ 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+```
+
+```{r}
+setwd("/Users/masahiromatsui/Dropbox/R/Rで学ぶ統計学入門図版作成用（改訂版）/付録/")
+d <- read.csv('table6-4.csv')
+y <- d$Pig
+feed <- factor(d$feed)
+summary(aov(y ~ feed))
+```
+
+```{r}
+TukeyHSD(aov(y ~ feed))
+```
+【考察】
+すべての項目間において、有意差が認められた。

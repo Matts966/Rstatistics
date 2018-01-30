@@ -1,0 +1,124 @@
+---
+title: "note11"
+author: "Matts966"
+date: "`r format(Sys.time(), '%Y/%m/%d')`"
+output:
+  pdf_document:
+    latex_engine: lualatex
+  word_document: default
+documentclass: ltjsarticle
+---
+ 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+```
+
+```{r}
+# seedをセットして再現性を持たせる
+set.seed(123)
+
+# type=oはオーバーラップ
+l <- 3
+d <- rpois(50, lambda=l)
+hist(d, ylim=c(0, 14), breaks=c(-0.5:8.5), xlab="x", ylab="freq.", main="")
+par(new=T)
+x <- seq(0, 8, 1)
+y <- 50*dpois(x, lambda=2) 
+plot(x, y, xlab="", ylab="", xlim=c(-0.5, 8.5), ylim=c(0, 14), type="o", col="grey", cex=0.5)
+
+
+hist(d, ylim=c(0, 14), breaks=c(-0.5:8.5), xlab="x", ylab="freq.", main="")
+par(new=T)
+x <- seq(0, 8, 1)
+y <- 50*dpois(x, lambda=3) 
+plot(x, y, xlab="", ylab="", xlim=c(-0.5, 8.5), ylim=c(0, 14), type="o", col="grey", cex=0.5)
+
+
+hist(d, ylim=c(0, 14), breaks=c(-0.5:8.5), xlab="x", ylab="freq.", main="")
+par(new=T)
+x <- seq(0, 8, 1)
+y <- 50*dpois(x, lambda=3.5) 
+plot(x, y, xlab="", ylab="", xlim=c(-0.5, 8.5), ylim=c(0, 14), type="o", col="grey", cex=0.5)
+
+
+hist(d, ylim=c(0, 14), breaks=c(-0.5:8.5), xlab="x", ylab="freq.", main="")
+par(new=T)
+x <- seq(0, 8, 1)
+y <- 50*dpois(x, lambda=4) 
+plot(x, y, xlab="", ylab="", xlim=c(-0.5,8.5), ylim=c(0, 14), type="o", col="grey", cex=0.5)
+```
+```{r}
+set.seed(123)
+l <- 3
+d <- rpois(50, lambda=l)
+
+logL <- sum(dpois(d, 2.0, log=T))
+logL
+logL <- sum(dpois(d, 3.0, log=T))
+logL
+logL <- sum(dpois(d, 3.5, log=T))
+logL
+logL <- sum(dpois(d, 4.0, log=T))
+logL
+# AICを計算して最小を提示
+AIC = -2 * (-97.71459) + 2 * 2
+AIC
+# よってlambda3.0でAIC最小
+```
+
+```{r}
+# figure 10.7 
+set.seed(123)
+l <- 3
+d <- rpois(50, lambda=l)
+
+logL <- function(m) sum(dpois(d, m, log=T))
+lambda <- seq(2, 5, 0.1)
+plot(lambda, sapply(lambda, logL), type="l", xlim=c(2, 5), xlab="lambda", ylab="logL")
+```
+
+```{r pressure, echo=FALSE}
+setwd("/Users/masahiromatsui/Dropbox/R/Rで学ぶ統計学入門図版作成用（改訂版）/付録/")
+```
+
+```{r}
+setwd("/Users/masahiromatsui/Dropbox/R/Rで学ぶ統計学入門図版作成用（改訂版）/付録/")
+d <- read.csv("table10-2.csv")
+result <- glm(cbind(d$dead, 1-d$dead) ~ d$dose, family=binomial(logit))
+logLik(result)
+AIC = -2 * (-6.781799) + 2 * 2
+AIC
+```
+
+```{r}
+setwd("/Users/masahiromatsui/Dropbox/R/Rで学ぶ統計学入門図版作成用（改訂版）/付録/")
+d <- read.csv("table10-3.csv")
+result <- glm(d$flw ~ d$wt, family=poisson)
+logLik(result)
+AIC = -2 * (-82.84586) + 2 * 2
+AIC
+```
+
+```{r}
+library(lme4)
+setwd("/Users/masahiromatsui/Dropbox/R/Rで学ぶ統計学入門図版作成用（改訂版）/付録/")
+
+d <- read.csv("table11-1.csv")
+plot(d$y ~ d$x, pch=as.character(d$block))
+res.1 <- glmer(d$y ~d$x + (1|d$block), family=gaussian(link = identity))
+res.2 <- lmer(d$y ~ d$x + (1|d$block))
+```
+
+```{r}
+summary(res.1)
+```
+
+```{r}
+summary(res.2)
+```
+【考察】
+AICは -2 * 最大対数尤度 + 2 * 最尤推定した自由パラメータの個数 で表され、加点対象、ペナルティをを演算していることはわかったのだが、なぜ 最尤推定した自由パラメータの個数 - 最大対数尤度 として大きい程よい値に設定しないのか、そもそも単純な足し引きで指標を決定して良いのか、理解が至らなかったので、これから勉強したい。
+
+
+

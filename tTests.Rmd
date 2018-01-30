@@ -1,0 +1,86 @@
+---
+title: "note06"
+author: "Matts966"
+date: "`r format(Sys.time(), '%Y/%m/%d')`"
+output:
+  pdf_document:
+    latex_engine: lualatex
+  html_document: default
+  word_document: default
+documentclass: ltjsarticle
+---
+ 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(ggplot2)
+```
+
+# 1
+```{r}
+# Ttest
+# 演習問題5-2以外も、一応載せておきます
+New <- c(2, 3, 6, 7, 4, 5, 6, 3)
+Old <- c(5, 7, 5, 8, 9, 7, 7, 6)
+t.test(New, Old, var=T)
+```
+
+```{r}
+# tTestの検算
+mean_N <- mean(New)
+mean_O <- mean(Old)
+SS_N <- sum((New-mean_N) ^ 2)
+SS_N
+SS_O <- sum((Old-mean_O) ^ 2)
+SS_O
+sP2 <- (SS_N + SS_O) / (length(New) + length(Old) - 2)
+sP2
+SE_mean <- sqrt(sP2 * (length(New) + length(Old)) / (length(New) * length(Old)))
+SE_mean
+2.25 / SE_mean
+```
+
+```{r}
+# 図5.3の作図
+t_s <- 2.25 / SE_mean
+
+x <- seq(-3, 3, 0.01)
+y <- dt(x, df = length(New) + length(Old) -2)
+xaxis.t2.5 <- qt(0.975, df = length(New) + length(Old) - 2)
+plot(x, y, type="l", xlab="t-score", ylab="prob. density", main="Fig.5-3")
+arrows(-xaxis.t2.5, 0.1, -xaxis.t2.5, 0, angle=45, length=0.1, lwd=2)
+arrows(xaxis.t2.5, 0.1, xaxis.t2.5, 0, angle=45, length=0.1, lwd=2)
+arrows(-t_s, 0.02, -t_s, 0, angle=45, length=0.05, lwd=3, col="red")
+```
+
+
+```{r}
+# 演習5-2
+# BOXPLOT
+X1 <- c(12, 16, 11, 9, 18, 17, 14, 16, 10, 11)
+X2 <- c(9, 10, 11, 8, 7, 9, 6, 10, 11, 13, 12)
+boxplot(X1, X2, ylim=c(0, 20), ylab="score")
+axis(labels=c("PLUS", "MINUS"), at=c(1, 2), side=1)
+```
+
+* 5章 演習問題5-2
+```{r}
+# 等分散かどうかチェックし、そうでなければ、val=trueをなくしてウェルチのttestを行うp66-67
+# まず双方の分散を計算すると
+var(X1)
+var(X2)
+```
+
+2倍近く違う。バートレットの均等性検定を行う
+```{r}
+score <- c(X1, X2)
+group <-factor(c(rep(1, 10), rep(2, 11)))
+bartlett.test(score~group)
+```
+
+有意差はない。ここから二つの標本が正規分布に従い、等しい分散をもっている母集団から抽出したことを前提とするt検定を実施しても問題がないことがわかる。
+```{r}
+t.test(X1, X2, var=T)
+```
+
+結果的にp値は0.05を大きく下回り、標本が正規分布に従い、2つの母集団が等しい分散を持っているという前提のもとでは、有意差があると言えることがわかった。

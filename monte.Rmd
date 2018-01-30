@@ -1,0 +1,58 @@
+---
+title: "note13"
+author: "Matts966"
+date: "`r format(Sys.time(), '%Y/%m/%d')`"
+output:
+  pdf_document:
+    latex_engine: lualatex
+  word_document: default
+documentclass: ltjsarticle
+---
+ 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+```
+
+```{r}
+# matrixは縦に数字を振っていく関数（byrow=Tなどで変更）
+x <- matrix(c(25, 10, 15, 30), ncol=2)
+x
+```
+
+```{r}
+chisq.test(x, correct=F)
+```
+
+```{r}
+d1 <- matrix(c(12, 7, 2, 9), nrow=2, byrow=T)
+fisher.test(d1, alternative = "g")
+```
+
+```{r}
+hair <- matrix(c(32, 43, 16, 9, 55, 65, 64, 16), nrow=2, byrow=T)
+fisher.test(hair)
+```
+
+```{r}
+#2000回試行のモンテカルロシミュレーションも実行可能
+hair <- matrix(c(32, 43, 16, 9, 55, 65, 64, 16), nrow=2, byrow=T)
+fisher.test(hair, simulate.p.value = T)
+```
+【考察】
+モンテカルロシミュレーションのような、膨大な量の計算を実行して、表を埋めていき、正確な値を推定するような手法は、確かにコンピュータの速度、メモリ容量、仮想記憶の性能向上などがなければ実行できていないと考えられる。
+```{r}
+# 演習問題12.1
+x2 = (49 / 31) + (49 / 31) + (49 / 29) + (49 / 29)
+x2
+pchisq(x2, df=1)
+x <- matrix(c(38, 22, 24, 36), ncol = 2, nrow = 2, byrow = T)
+chisq.test(x, correct = F)
+# 合っている
+print('------------------------------------------------------------------------------------------------')
+# モンテカルロ実行
+e <- matrix(c(31, 31, 29, 29), ncol = 2, nrow = 2, byrow = T) 
+chisq.test(x, p=e, rescale = T, simulate.p.value = T, B = 10000)
+```
+【考察】
+さすがに、毎回実際に一万回計算して結果を算出しているので、毎回異なる数値が出力される。概して、カイ2乗検定よりもp-valueは大きくなってしまっている。

@@ -1,0 +1,90 @@
+---
+title: "note04"
+author: "Matts966"
+date: "2017/10/26"
+output:
+  pdf_document:
+    latex_engine: lualatex
+  word_document: default
+documentclass: ltjsarticle
+---
+ 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+```
+
+# 1
+```{r}
+n = 100
+M = 100
+mean.d = numeric(M)
+for (i in 1:M) {
+  mean.d[i] <- mean(runif(n, min = 0, max = 10))
+}
+hist(mean.d, breaks = 50)
+qqnorm(mean.d)
+```
+
+```{r}
+n = 100
+M = 10000
+mean.d = numeric(M)
+for (i in 1:M) {
+  mean.d[i] <- mean(runif(n, min = 0, max = 10))
+}
+hist(mean.d, breaks = 50)
+qqnorm(mean.d)
+```
+
+```{r}
+n = 100
+M = 10000
+mean.d = numeric(M)
+for (i in 1:M) {
+  mean.d[i] <- mean(runif(n, min = 0, max = 10))
+}
+hist(mean.d, breaks = 50)
+qqnorm(mean.d)
+```
+
+```{r}
+n = 10000
+M = 10000
+mean.d = numeric(M)
+for (i in 1:M) {
+  mean.d[i] <- mean(runif(n, min = 0, max = 10))
+}
+hist(mean.d, breaks = 50)
+qqnorm(mean.d)
+```
+【考察】
+中心極限定理を実際にプロットすることで実感することができた。実際にqqplotも綺麗に現れている。実際には正規分布に従う事象はあまりない、と言う話を聞いて、ガンマ分布などの内容により興味を持つことができた。nとMを実際に変えて計算してみると、大体は同じ結果になるが、qqplotの結果など、やはりnもMも多い方が母集団の平均に近づいていった。
+
+
+
+# 2
+```{r}
+problem3.1 <- pnorm(156, mean = 145.8, sd = 4) - pnorm(153, mean = 145.8, sd = 4)
+problem3.1 = problem3.1 * 1000
+problem3.1
+problem3.1.2 <- 1 - pnorm(153.8, mean = 145.8, sd = 4)
+problem3.1.2 = problem3.1.2 * 1000
+problem3.1.2
+```
+【考察】
+結果としては、三十か三十一人、二十二か二十三人となる。確率変数の累積値を計算し、目的の確率を計算した。確率変数が全体で1となる面積として捉えられるようになった。確率という抽象的なものにイメージが湧いて、とても勉強になった。
+
+```{r}
+# オリジナル問題
+# 100体のマウスの体長が、平均20cm, 標準偏差2cmの正規分布に従う時、
+# 13cm以上15cm以下の身長のマウスと10cm以下のマウスの数を推定せよ。
+original1 <- pnorm(13, mean = 20, sd = 2) - pnorm(15, mean = 20, sd = 2)
+original1 = original1 * 100
+original1
+original2 <- pnorm(10, mean = 20, sd = 2)
+original2 = original2 * 100
+original2
+```
+【考察】
+実際に実験でありそうな設定にした見た。使うときのイメージが明確にできたので、やり方もしっかり学べたと思う。1問目はマイナスになってしまっているので、条件に対して、低すぎる値を設定する場合は、0などと考えないといけないと思った。
