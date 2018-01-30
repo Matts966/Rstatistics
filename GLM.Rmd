@@ -1,0 +1,29 @@
+---
+title: "note10"
+author: "Matts966"
+date: "`r format(Sys.time(), '%Y/%m/%d')`"
+output:
+  pdf_document:
+    latex_engine: lualatex
+  word_document: default
+documentclass: ltjsarticle
+---
+ 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+```
+
+# 演習10・1
+```{r}
+setwd("~/Dropbox/R/Rで学ぶ統計学入門図版作成用（改訂版）/付録/")
+d <- read.csv("enshu10-1.csv")
+result <- glm(d$mihari ~ d$wt, offset=log(d$minutes), family = poisson)
+summary(result)
+plot(d$mihari / d$minutes ~ d$wt)
+pred.wt <- seq(0, 130)
+pred.y <- exp(result$coefficient[1] + result$coefficient[2]*pred.wt)
+lines(pred.wt, pred.y, lwd=2, col="red")
+```
+【考察】
+体重の係数は0.04568、有意確率5.61e-05より強い効果が検出された。
