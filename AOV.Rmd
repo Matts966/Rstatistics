@@ -1,0 +1,80 @@
+---
+title: "note08"
+author: "Matts966"
+date: "`r format(Sys.time(), '%Y/%m/%d')`"
+output:
+  pdf_document:
+    latex_engine: lualatex
+  word_document: default
+documentclass: ltjsarticle
+---
+ 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+```
+
+# 1
+```{r}
+kaiteki <- c(6, 5, 6, 7, 2, 1, 1, 0, 7, 8, 8, 9, 8, 7, 6, 7)
+size <- factor(c(rep("S", 8), rep("L", 8)))
+student <- factor(c(rep(1, 4), rep(2, 4), rep(1, 4), rep(2, 4)))
+summary(aov(kaiteki ~ size + student + size:student))
+```
+```{r}
+# figure 7.2 (a)
+d <- c(6, 5, 6, 7, 2, 1, 1, 0, 7, 8, 8, 9, 8, 7, 6, 7)
+one <-　c(mean(d[1:4]), mean(d[9:12]))
+two <-　c(mean(d[5:8]), mean(d[13:16]))
+plot(one, xlim=c(0.5, 2.5),ylim=c(0, 10), type="b", xlab="", ylab="desirebility", pch=1, xaxt="n")
+points(two, type="b", pch=2)
+axis(side=1, at=1:2, labels=c("small", "large"))
+```
+
+```{r}
+setwd("~/Dropbox/R/Rで学ぶ統計学入門図版作成用（改訂版）/付録/")
+d2 <- read.csv("table7-1.csv")
+d2
+```
+
+```{r}
+size <- factor(d2$size)
+student <- factor(d2$student)
+summary(aov(d2$kaiteki ~ size*student))
+```
+
+```{r}
+d <- d2$kaiteki
+one <- c(mean(d[1:4]), mean(d[9:12]))
+two <- c(mean(d[5:8]), mean(d[13:16]))
+plot(one, xlim=c(0.5, 2.5), ylim=c(0, 10), type="b", xlab="", ylab="kaiteki", pch=1, xaxt="n")
+points(two, type="b", pch=2)
+axis(side=1, at=1:2, labels=c("small", "large"))
+```
+【考察】
+エクセルから数値を読み取った場合、スムーズに計算に移行できてよかった。
+```{r}
+setwd("~/Dropbox/R/Rで学ぶ統計学入門図版作成用（改訂版）/付録/")
+d <- read.csv("table7-2.csv")
+ft <- factor(d$ft)
+soil <- factor(d$soil)
+summary(aov(d$plant ~ ft*soil))
+```
+
+```{r}
+nat.soil <- c(mean(d$plant[1:10]), mean(d$plant[21:30]))
+art.soil <- c(mean(d$plant[11:20]), mean(d$plant[31:40]))
+plot(nat.soil, type="o", xlim=c(0.5, 2.5), ylim=c(25, 40), xlab="", ylab="plant growth (cm)", xaxt="n")
+points(c(1, 2), art.soil, type="o", pch=2)
+axis(side=1, at=c(1, 2), label=c("natural", "artificial"))
+```
+【考察】
+試しにfactor関数の返り値を見て見たところ、単なる行列ではなく、その要素が要因であることを示すような構造になっていた。具体的には以下のようである。
+```{r}
+d$soil
+factor(d$soil)
+d$ft
+factor(d$ft)
+c(4,5,3,4,1,42,2,6)
+factor(c(4,5,3,4,1,42,2,6))
+```
